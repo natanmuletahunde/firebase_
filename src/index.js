@@ -1,18 +1,18 @@
-import {initializeApp} from "firebase/app"
-import {getFirestore , collection,getDocs} from "firebase/firestore"
+import { initializeApp } from "firebase/app";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 const firebaseConfig = {
 
-    apiKey: "AIzaSyA_69H-0GjNDNBvT2QGmKdACXJXxc-Ix7M",
+    apiKey: "AIzaSyB5-4-23wj_HgQ8ixOCflKx8LNRp4w1pYw",
   
-    authDomain: "fir-9-dojo-95a6f.firebaseapp.com",
+    authDomain: "fir-9-dojos-271af.firebaseapp.com",
   
-    projectId: "fir-9-dojo-95a6f",
+    projectId: "fir-9-dojos-271af",
   
-    storageBucket: "fir-9-dojo-95a6f.appspot.com",
+    storageBucket: "fir-9-dojos-271af.appspot.com",
   
-    messagingSenderId: "700153593412",
+    messagingSenderId: "473259734233",
   
-    appId: "1:700153593412:web:ccbadb9944eb92cde98611"
+    appId: "1:473259734233:web:1fcd4277bcc15630c33ac8"
   
   };
 
@@ -21,5 +21,12 @@ const firebaseConfig = {
   const colRef = collection(db, 'books')
   getDocs(colRef)
   .then((snapshot)=>{
-    console.log(snapshot.docs)
+    let books =[]
+    snapshot.forEach((doc) => {
+        books.push({...doc.data(), id:doc.id})
+    });
+    console.log(books)
+  })
+  .catch(err=>{
+        console.log(err.messsage);
   })
