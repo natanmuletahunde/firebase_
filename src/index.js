@@ -19,17 +19,14 @@ const db = getFirestore();
 const colRef = collection(db, 'books');
 
 // real time collection  data 
-getDocs(colRef)
-  .then((snapshot) => {
+
+  onSnapshot(colRef,(snapshot)=>{
     let books = [];
     snapshot.forEach((doc) => {
       books.push({ ...doc.data(), id: doc.id });
     });
-    console.log(books);
+    console.log(books);  
   })
-  .catch(err => {
-    console.log(err.message);
-  });
 
 // Adding a new book
 const addBookForm = document.querySelector('.add');
