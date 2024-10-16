@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
-
+import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  getAuth
+} from "firebase/auth";
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB5-4-23wj_HgQ8ixOCflKx8LNRp4w1pYw",
@@ -14,8 +16,10 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
+
 // Initialize Firestore
 const db = getFirestore();
+const auth = getAuth();
 const colRef = collection(db, 'books') // once we  declare the colref we can use the crud operstaion because the place is known 
 
 // queries
@@ -74,7 +78,7 @@ deleteBookForm.addEventListener('submit', (e) => {
     console.error('Document ID is missing');
   }
 });
-const docRef =  doc(db, 'books', 'TB2plVJAqQSbXbuYxZxN')
+const docRef =  doc(db, 'books', deleteBookForm.id.value);
 
 getDoc(docRef)
 .then((doc)=>{
@@ -83,5 +87,29 @@ getDoc(docRef)
 onSnapshot(docRef,(doc)=>{
 console.log(doc.data(), doc.id)
 })
+// Form to update a book
+const updateForm = document.querySelector('.update');
+
+updateForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  // Get the document ID from the form input
+  const docId = updateForm.id.value;
+
+  // Create a reference to the document in the 'books' collection
+  const docRef = doc(db, 'books', docId);
+
+  // Update the 'title' field of the document with the new value
+  updateDoc(docRef, {
+    title: 'updated title' // You can replace this with the actual updated title value
+  })
+  .then(() => {
+    console.log('Book updated successfully!');
+    updateForm.reset(); // Reset the form after the update
+  })
+  .catch((err) => {
+    console.log('Error updating book:', err.message);
+  });
+});
 
 
