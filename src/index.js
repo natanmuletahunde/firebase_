@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import {
   getAuth
 } from "firebase/auth";
+import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB5-4-23wj_HgQ8ixOCflKx8LNRp4w1pYw",
@@ -111,5 +111,11 @@ updateForm.addEventListener('submit', (e) => {
     console.log('Error updating book:', err.message);
   });
 });
+
+// Sign-in user up
+const signupForm = document.querySelector('.signup');
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+})
 
 
