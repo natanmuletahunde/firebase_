@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, query, where,orderBy } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, where ,serverTimestamp} from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,7 +19,7 @@ const db = getFirestore();
 const colRef = collection(db, 'books') // once we  declare the colref we can use the crud operstaion because the place is known 
 
 // queries
-const q = query( colRef ,where("author","==","james"),orderBy('title','desc'))
+const q = query( colRef ,orderBy('createdAt'))
 
 // real time collection  data 
  onSnapshot(q ,(snapshot)=>{
@@ -39,6 +39,7 @@ addBookForm.addEventListener('submit', (e) => {
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
+    createdAt:serverTimestamp()
   })
   .then(() => {
     console.log("Book added successfully!");
