@@ -50,22 +50,28 @@ addBookForm.addEventListener('submit', (e) => {
   });
 });
 
-// Deleting a book by document ID
-const deleteBookForm = document.querySelector('.delete');  // Correct selector
+const deleteBookForm = document.querySelector('.delete');
 deleteBookForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
   // Get the document ID from the form input
-  const docId = deleteBookForm.id.value;
+  const docId = deleteBookForm.querySelector('[name="id"]').value;
 
-  // Delete the document from Firestore
-  const docRef = doc(db, 'books', docId);
-  deleteDoc(docRef)
-    .then(() => {
-      console.log(`Book with ID ${docId} deleted successfully!`);
-      deleteBookForm.reset();  // Reset the form after deletion
-    })
-    .catch(err => {
-      console.log("Error deleting book:", err.message);
-    });
+  if (docId) {
+    // Reference the document to delete
+    const docRef = doc(db, 'books', docId);
+
+    // Delete the document
+    deleteDoc(docRef)
+      .then(() => {
+        console.log(`Book with ID ${docId} deleted successfully!`);
+        deleteBookForm.reset();  // Reset the form after deletion
+      })
+      .catch(err => {
+        console.error("Error deleting book:", err.message);  // Log the error
+      });
+  } else {
+    console.error('Document ID is missing');
+  }
 });
+
