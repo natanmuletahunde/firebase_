@@ -30,3 +30,13 @@ const firebaseConfig = {
   .catch(err=>{
         console.log(err.messsage);
   })
+  // adding documents 
+  const addBookForm = document.querySelector('add')
+  addBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+  })
+  // deleting documents 
+  const deleteBookForm = document.querySelector('delete')
+  deleteBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+  })
