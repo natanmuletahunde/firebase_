@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, where ,serverTimestamp} from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
