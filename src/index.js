@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -10,7 +10,7 @@ const firebaseConfig = {
   messagingSenderId: "473259734233",
   appId: "1:473259734233:web:1fcd4277bcc15630c33ac8"
 };
-
+  // getdoc is used to grap  a single function 
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
@@ -74,4 +74,10 @@ deleteBookForm.addEventListener('submit', (e) => {
     console.error('Document ID is missing');
   }
 });
+const docRef =  doc(db, 'books', 'TB2plVJAqQSbXbuYxZxN')
+
+getDoc(docRef)
+.then((doc)=>{
+  console.log(doc.data(), doc.id)
+})
 
