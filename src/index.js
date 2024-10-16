@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore,addDoc } from "firebase/firestore";
 const firebaseConfig = {
 
     apiKey: "AIzaSyB5-4-23wj_HgQ8ixOCflKx8LNRp4w1pYw",
@@ -39,4 +39,11 @@ const firebaseConfig = {
   const deleteBookForm = document.querySelector('delete')
   deleteBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
+    addDoc(colRef, {
+      title:addBookForm.title.value,
+      author:addBookForm.author.value,
+    })
+    .then(()=>{
+      addBookForm.reset()
+    })
   })
