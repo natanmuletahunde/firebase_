@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc,onSnapshot , getFirestore } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -18,7 +18,7 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 const colRef = collection(db, 'books');
 
-// Fetch documents from Firestore
+// real time collection  data 
 getDocs(colRef)
   .then((snapshot) => {
     let books = [];
