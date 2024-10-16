@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, deleteDoc, doc,onSnapshot , getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,10 +16,13 @@ initializeApp(firebaseConfig);
 
 // Initialize Firestore
 const db = getFirestore();
-const colRef = collection(db, 'books');
+const colRef = collection(db, 'books') // once we  declare the colref we can use the crud operstaion because the place is known 
+
+// queries
+const q = query( colRef ,where("author","==","james"))
 
 // real time collection  data 
- onSnapshot(colRef,(snapshot)=>{
+ onSnapshot(q ,(snapshot)=>{
     let books = [];
     snapshot.forEach((doc) => {
       books.push({ ...doc.data(), id: doc.id });
