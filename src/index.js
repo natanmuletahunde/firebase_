@@ -19,8 +19,7 @@ const db = getFirestore();
 const colRef = collection(db, 'books');
 
 // real time collection  data 
-
-  onSnapshot(colRef,(snapshot)=>{
+ onSnapshot(colRef,(snapshot)=>{
     let books = [];
     snapshot.forEach((doc) => {
       books.push({ ...doc.data(), id: doc.id });
