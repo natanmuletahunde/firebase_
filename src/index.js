@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
+  createUserWithEmailAndPassword,
   getAuth
 } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
@@ -88,34 +89,36 @@ onSnapshot(docRef,(doc)=>{
 console.log(doc.data(), doc.id)
 })
 // Form to update a book
-const updateForm = document.querySelector('.update');
-
-updateForm.addEventListener('submit', (e) => {
+const updateForm = document.querySelector('.update')
+updateForm.addEventListener('submit', (e)=>{
   e.preventDefault();
 
-  // Get the document ID from the form input
-  const docId = updateForm.id.value;
+  const docRef =  doc(db, 'books', updateForm.id.value);
 
-  // Create a reference to the document in the 'books' collection
-  const docRef = doc(db, 'books', docId);
-
-  // Update the 'title' field of the document with the new value
   updateDoc(docRef, {
-    title: 'updated title' // You can replace this with the actual updated title value
+    title: 'Update title'
   })
-  .then(() => {
-    console.log('Book updated successfully!');
-    updateForm.reset(); // Reset the form after the update
+  .then(()=>{
+    updateForm.reset()
   })
-  .catch((err) => {
-    console.log('Error updating book:', err.message);
-  });
-});
+
+
+})
 
 // Sign-in user up
 const signupForm = document.querySelector('.signup');
 signupForm.addEventListener('submit', (e) => {
   e.preventDefault();
+ const email = signupForm.email.value;
+ const password = signupForm.password.value;
+  createUserWithEmailAndPassword(auth, email,password)
+  .then((cred)=>{
+    console.log('user created :' ,cred.user)
+    signupForm.reset();
+  })
+  .catch((err)=>{
+    console.log('error creating user :',err.message)
+  })
 })
 
 
