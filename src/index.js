@@ -1,124 +1,156 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app'
 import {
+  getFirestore, collection, onSnapshot,
+  addDoc, deleteDoc, doc,
+  query, where,
+  orderBy, serverTimestamp,
+  updateDoc
+} from 'firebase/firestore'
+import {
+  getAuth,
   createUserWithEmailAndPassword,
-  getAuth
-} from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
-// Firebase configuration
+  signInWithEmailAndPassword, signOut,
+  onAuthStateChanged
+} from 'firebase/auth'
+
 const firebaseConfig = {
-  apiKey: "AIzaSyB5-4-23wj_HgQ8ixOCflKx8LNRp4w1pYw",
-  authDomain: "fir-9-dojos-271af.firebaseapp.com",
-  projectId: "fir-9-dojos-271af",
-  storageBucket: "fir-9-dojos-271af.appspot.com",
-  messagingSenderId: "473259734233",
-  appId: "1:473259734233:web:1fcd4277bcc15630c33ac8"
-};
-  // getdoc is used to grap  a single function 
-// Initialize Firebase
-initializeApp(firebaseConfig);
+  apiKey: "AIzaSyDmXgb_58lO7aK_ujN37pGlNxzWGEU0YpI",
+  authDomain: "fb9-sandbox.firebaseapp.com",
+  projectId: "fb9-sandbox",
+  storageBucket: "fb9-sandbox.appspot.com",
+  messagingSenderId: "867529587246",
+  appId: "1:867529587246:web:dc754ab7840c737f47bdbf"
+}
 
+// init firebase
+initializeApp(firebaseConfig)
 
-// Initialize Firestore
-const db = getFirestore();
-const auth = getAuth();
-const colRef = collection(db, 'books') // once we  declare the colref we can use the crud operstaion because the place is known 
+// init services
+const db = getFirestore()
+const auth = getAuth()
+
+// collection ref
+const colRef = collection(db, 'books')
 
 // queries
-const q = query( colRef ,orderBy('createdAt'))
+const q = query(colRef, where("author", "==", "patrick rothfuss"), orderBy('createdAt'))
 
-// real time collection  data 
- onSnapshot(q ,(snapshot)=>{
-    let books = [];
-    snapshot.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id });
-    });
-    console.log(books);  
+// realtime collection data
+const unsubCol = onSnapshot(q, (snapshot) => {
+  let books = []
+  snapshot.docs.forEach(doc => {
+    books.push({ ...doc.data(), id: doc.id })
   })
+  console.log(books)
+})
 
-// Adding a new book
-const addBookForm = document.querySelector('.add');
+// adding docs
+const addBookForm = document.querySelector('.add')
 addBookForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
-  // Add a new document to Firestore
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
-    createdAt:serverTimestamp()
+    createdAt: serverTimestamp()
   })
   .then(() => {
-    console.log("Book added successfully!");
-    addBookForm.reset();  // Reset the form after successful addition
+    addBookForm.reset()
   })
-  .catch(err => {
-    console.log("Error adding book:", err.message);
-  });
-});
+})
 
-const deleteBookForm = document.querySelector('.delete');
+// deleting docs
+const deleteBookForm = document.querySelector('.delete')
 deleteBookForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
-  // Get the document ID from the form input
-  const docId = deleteBookForm.querySelector('[name="id"]').value;
+  const docRef = doc(db, 'books', deleteBookForm.id.value)
 
-  if (docId) {
-    // Reference the document to delete
-    const docRef = doc(db, 'books', docId);
+  deleteDoc(docRef)
+    .then(() => {
+      deleteBookForm.reset()
+    })
+})
 
-    // Delete the document
-    deleteDoc(docRef)
-      .then(() => {
-        console.log(`Book with ID ${docId} deleted successfully!`);
-        deleteBookForm.reset();  // Reset the form after deletion
-      })
-      .catch(err => {
-        console.error("Error deleting book:", err.message);  // Log the error
-      });
-  } else {
-    console.error('Document ID is missing');
-  }
-});
-const docRef =  doc(db, 'books', deleteBookForm.id.value);
+// fetching a single document (& realtime)
+const docRef = doc(db, 'books', 'gGu4P9x0ZHK9SspA1d9j')
 
-getDoc(docRef)
-.then((doc)=>{
+const unsubDoc = onSnapshot(docRef, (doc) => {
   console.log(doc.data(), doc.id)
 })
-onSnapshot(docRef,(doc)=>{
-console.log(doc.data(), doc.id)
-})
-// Form to update a book
-const updateForm = document.querySelector('.update')
-updateForm.addEventListener('submit', (e)=>{
-  e.preventDefault();
 
-  const docRef =  doc(db, 'books', updateForm.id.value);
+// updating a document
+const updateForm = document.querySelector('.update')
+updateForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  let docRef = doc(db, 'books', updateForm.id.value)
 
   updateDoc(docRef, {
-    title: 'Update title'
+    title: 'updated title'
   })
-  .then(()=>{
+  .then(() => {
     updateForm.reset()
   })
-
-
 })
 
-// Sign-in user up
-const signupForm = document.querySelector('.signup');
+// signing users up
+const signupForm = document.querySelector('.signup')
 signupForm.addEventListener('submit', (e) => {
-  e.preventDefault();
- const email = signupForm.email.value;
- const password = signupForm.password.value;
-  createUserWithEmailAndPassword(auth, email,password)
-  .then((cred)=>{
-    console.log('user created :' ,cred.user)
-    signupForm.reset();
-  })
-  .catch((err)=>{
-    console.log('error creating user :',err.message)
-  })
+  e.preventDefault()
+
+  const email = signupForm.email.value
+  const password = signupForm.password.value
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(cred => {
+      console.log('user created:', cred.user)
+      signupForm.reset()
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
 })
 
+// logging in and out
+const logoutButton = document.querySelector('.logout')
+logoutButton.addEventListener('click', () => {
+  signOut(auth)
+    .then(() => {
+      console.log('user signed out')
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
+})
 
+const loginForm = document.querySelector('.login')
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const email = loginForm.email.value
+  const password = loginForm.password.value
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(cred => {
+      console.log('user logged in:', cred.user)
+      loginForm.reset()
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
+})
+
+// subscribing to auth changes
+const unsubAuth = onAuthStateChanged(auth, (user) => {
+  console.log('user status changed:', user)
+})
+
+// unsubscribing from changes (auth & db)
+const unsubButton = document.querySelector('.unsub')
+unsubButton.addEventListener('click', () => {
+  console.log('unsubscribing')
+  unsubCol()
+  unsubDoc()
+  unsubAuth()
+})
